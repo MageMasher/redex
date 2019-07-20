@@ -1,5 +1,5 @@
 (ns net.joelane.redex
-  (:refer-clojure :exclude [read read-string *default-data-reader-fn* *read-eval* *data-readers*])
+  (:refer-clojure :exclude [read])
   (:require
     [clojure.main :as main]
     [clojure.core.logic :as logic]
@@ -8,14 +8,14 @@
     [clojure.java.io :as io]
     [clojure.pprint :as pp]
     [clojure.tools.reader.reader-types :as t]
-    [clojure.tools.reader :refer [read read-string *default-data-reader-fn* *read-eval* *data-readers*]]
+    [clojure.tools.reader :refer [read]]
     [clojure.java.io :as io]
     [clojure.java.io :as io])
   (:import (clojure.lang LineNumberingPushbackReader)
            (java.io File StringReader)
            (java.nio.file FileSystems)))
 
-(set! *print-length* 10)
+#_(set! *print-length* 10)
 
 (defonce registry-ref (atom {}))
 
@@ -72,7 +72,7 @@
                 (t/source-logging-push-back-reader 2 file))
         sentinel ::EOF]
     (loop [forms []]
-      (let [form (read {:eof sentinel} rdr)]
+      (let [form (try (read {:eof sentinel} rdr) (catch Exception e nil))]
         (if (= sentinel form)
           forms
           (recur (conj forms form)))))))
@@ -100,18 +100,23 @@
 (defn -main
   "Entry point for the redex-repl"
   [& args]
-  (doseq [file (find-files "./resources" "glob:*.edn")]
-    (read-rules file))
-  (doseq [simplified (keep identity (for [file (find-files)
-                               forms (read-forms file)
-                               form forms]
-                           (let [simpler-form? (simplify form)
-                                 loc (meta form)]
-                             (when simpler-form?
-                               (assoc loc
-                                 :form form
-                                 :alt simpler-form?)))))]
-    (pp/pprint simplified)))
+  (let [user-home (System/getProperty "user.home")]
+    (doseq [file (find-files (str user-home "/.redex/rules") "glob:*.edn")]
+      (println "Found a rule" file)
+      (read-rules file))
+    (doseq [file (find-files)
+            forms (read-forms file)
+            :when (seq? forms)
+            form forms]
+      (try
+        (let [simpler-form? (simplify form)
+              loc (meta form)]
+          (when simpler-form?
+            (pp/pprint (assoc loc
+                         :form form
+                         :alt simpler-form?))))
+        (catch Exception e
+          nil)))))
 
 
 ;; Repl stuff
