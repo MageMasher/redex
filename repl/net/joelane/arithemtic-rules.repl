@@ -1,0 +1,32 @@
+(require '[cognitect.transcriptor :as xr :refer (check!)]
+         '[clojure.spec.alpha :as s]
+         '[clojure.repl :refer :all]
+         '[clojure.spec.test.alpha :as test]
+         '[net.joelane.redex :as redex])
+
+(reset! redex/registry-ref {})
+
+(def form '(+ 1 2))
+
+(redex/simplify form)
+
+(check! nil?)
+
+(+ 2 2)
+(check! even?)
+
+(redex/read-rules "resources/arithmetic-rules.edn")
+(redex/read-rules "resources/collections-rules.edn")
+(redex/read-rules "resources/conditional-rules.edn")
+(redex/read-rules "resources/equality-rules.edn")
+(redex/read-rules "resources/standard-library-rules.edn")
+
+(redex/simplify form)
+
+(check! #{'(inc 2)})
+
+(redex/simplify '(defn bad-hypot
+                   [x y]
+                   (let [inced-x (+ 1 (* 1 x) (* 0 1))
+                         multed-y (* 1 (* 1 (* 2 y)))]
+                     (Math/sqrt (+ (Math/pow inced-x 2) (Math/pow multed-y 2))))))

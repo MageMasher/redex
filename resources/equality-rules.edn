@@ -1,0 +1,17 @@
+[
+ {:rule :net.joelane.redex.equality/not= :to (not= . ?args) :from [(not (= . ?args))]}
+
+ ;; zero?
+ {:rule :net.joelane.redex.equality/zero? :to (zero? ?x) :from [(= 0 ?x) (= ?x 0) (== 0 ?x) (== ?x 0)]}
+ {:rule :net.joelane.redex.equality/pos? :to (pos? ?x) :from [(< 0 ?x) (> ?x 0)]}
+
+ {:rule :net.joelane.redex.equality/neg? :to (neg? ?x) :from [(< ?x 0) (> 0 ?x)]}
+
+ ;; true? false?
+ {:rule :net.joelane.redex.equality/true? :to (true? ?x) :from [(= true ?x)]}
+ {:rule :net.joelane.redex.equality/false? :to (false? ?x) :from [(= false ?x)]}
+
+ ; nil?
+ {:rule :net.joelane.redex.equality/nil? :to (nil? ?x) :from [(= ?x nil) (= nil ?x)]}
+
+ ]

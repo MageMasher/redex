@@ -1,0 +1,18 @@
+[
+
+ {:rule :net.joelane.redex.arithmetic/vector :to (vector . ?x) :from [(conj [] . ?x)]}
+ {:rule :net.joelane.redex.arithmetic/vec :to (vec ?coll) :from [(into [] ?coll)]}
+ {:rule :net.joelane.redex.arithmetic/assoc-in :to (assoc-in ?coll [?key0 ?key1] ?val) :from [(assoc ?coll ?key0 (assoc (get ?coll ?key0) ?key1 ?val))
+                                                                                              (assoc ?coll ?key0 (assoc (?coll ?key0) ?key1 ?val))
+                                                                                              (assoc ?coll ?key0 (assoc (?key0 ?coll) ?key1 ?val))]}
+ {:rule :net.joelane.redex.arithmetic/update-in :to (update-in ?coll [?key] ?fn . ?args) :from [(assoc ?coll ?key (?fn (?key ?coll) . ?args))
+                                                                                                (assoc ?coll ?key (?fn (get ?coll ?key) . ?args))
+                                                                                                (assoc ?coll ?key (?fn (?coll ?key) . ?args))]}
+ {:rule :net.joelane.redex.arithmetic/assoc-in-keys :to (assoc-in ?coll ?keys ?val) :from [(update-in ?coll ?keys assoc ?val)]}
+ {:rule :net.joelane.redex.arithmetic/seq :to (seq ?x) :from [(not (empty? ?x))]}
+ {:rule :net.joelane.redex.arithmetic/when :to (when (seq ?x) . ?y) :from [(when-not (empty? ?x) . ?y)]}
+ {:rule :net.joelane.redex.arithmetic/set :to (set ?coll) :from [(into #{} ?coll)]}
+ {:rule :net.joelane.redex.arithmetic/repeatedly :to (repeatedly ?n ?coll) :from [(take ?n (repeatedly ?coll))]}
+ {:rule :net.joelane.redex.arithmetic/run! :to (run! ?fn ?coll) :from [(dorun (map ?fn ?coll))]}
+
+ ]

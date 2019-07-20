@@ -1,0 +1,26 @@
+{:paths ["resources" "src"]
+ :deps  {org.clojure/clojure      {:mvn/version "1.10.1"}
+         org.clojure/core.logic   {:mvn/version "0.8.11"}
+         org.clojure/tools.analyzer {:mvn/version "0.7.0"}
+         org.clojure/tools.analyzer.jvm {:mvn/version "0.7.2"}
+         org.clojure/tools.reader {:mvn/version "1.3.2"}
+
+
+         ;; for tools analyzer datalog queries
+
+         com.datomic/datomic-free {:mvn/version "0.9.5697"}}
+ :aliases
+        {:transcriptor
+         {:extra-paths ["repl"]
+          :extra-deps  {com.cognitect/transcriptor {:mvn/version "0.1.5"}
+                        org.clojure/spec.alpha     {:mvn/version "0.2.176"}}}
+         :test
+         {:extra-paths ["test"]
+          :extra-deps  {org.clojure/test.check {:mvn/version "RELEASE"}}}
+
+         :runner
+         {:extra-deps {com.cognitect/test-runner
+                       {:git/url "https://github.com/cognitect-labs/test-runner"
+                        :sha     "3cb0a9daf1cb746259dc8309b218f9211ad3b33b"}}
+          :main-opts  ["-m" "cognitect.test-runner"
+                       "-d" "test"]}}}

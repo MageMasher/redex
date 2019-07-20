@@ -1,0 +1,23 @@
+[
+ {:rule :net.joelane.redex.arithmetic/join-x-y :to (clojure.string/join ?x ?y) :from [(apply str (interpose ?x ?y))]}
+ {:rule :net.joelane.redex.arithmetic/join-x :to (clojure.string/join ?x) :from [(apply str ?x)]}
+ {:rule :net.joelane.redex.arithmetic/reverse :to (clojure.string/reverse ?x) :from [(apply str (reverse ?x))]}
+ ;; mapcat
+ {:rule :net.joelane.redex.arithmetic/mapcat :to (mapcat ?x ?y) :from [(apply concat (apply map ?x ?y))]}
+ {:rule :net.joelane.redex.arithmetic/mapcat* :to (mapcat ?x . ?y) :from [(apply concat (map ?x . ?y))]}
+ ;; filter}
+ {:rule :net.joelane.redex.arithmetic/remove :to (remove ?pred ?coll) :from [(filter (fn [?x] (not (?pred ?x))) ?coll)
+                                                                             (filter (fn* [?x] (not (?pred ?x))) ?coll)
+                                                                             (filter (complement ?pred) ?coll)]}
+ {:rule :net.joelane.redex.arithmetic/remove-empty :to (remove empty? ?coll) :from [(filter seq ?coll)]}
+ {:rule :net.joelane.redex.arithmetic/filterv :to (filterv ?pred ?coll) :from [(vec (filter ?pred ?coll))]}
+ ;; first/next shorthands}
+ {:rule :net.joelane.redex.arithmetic/ffirst :to (ffirst ?coll) :from [(first (first ?coll))]}
+ {:rule :net.joelane.redex.arithmetic/fnext :to (fnext ?coll) :from [(first (next ?coll))]}
+ {:rule :net.joelane.redex.arithmetic/nnext :to (nnext ?coll) :from [(next (next ?coll))]}
+ {:rule :net.joelane.redex.arithmetic/nfirst :to (nfirst ?coll) :from [(next (first ?coll))]}
+ {:rule :net.joelane.redex.arithmetic/nnext :to (not-any? ?pred ?coll) :from [(not (some ?pred ?coll))]}
+ {:rule :net.joelane.redex.arithmetic/nfirst :to (vary-meta ?x ?f . ?arg) :from [(with-meta ?x (?f (meta ?x) . ?arg))]}
+
+ ;; TODO: Grab advanced threading macro rules from https://github.com/jonase/kibit/blob/master/kibit/src/kibit/rules/misc.clj
+ ]

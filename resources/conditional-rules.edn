@@ -1,0 +1,17 @@
+[
+ {:rule :net.joelane.redex.conditional/when :to (when ?x ?y) :from [(if ?x ?y nil)]}
+ {:rule :net.joelane.redex.conditional/when* :to (when ?x . ?y) :from [(if ?x (do . ?y)) (when ?x (do . ?y)) (when-not (not ?x) . ?y)]}
+ {:rule :net.joelane.redex.conditional/when-not :to (when-not ?x ?y) :from [(if ?x nil ?y)]}
+ {:rule :net.joelane.redex.conditional/when-not* :to (when-not ?x . ?y) :from [(when (not ?x) . ?y) (when-not ?x (do . ?y)) (if-not ?x (do . ?y))]}
+ {:rule :net.joelane.redex.conditional/if-not :to (if-not ?x ?y ?z) :from [(if (not ?x) ?y ?z)]}
+ {:rule :net.joelane.redex.conditional/or :to (or ?x ?y) :from [(if ?x ?x ?y)]}
+
+ {:rule :net.joelane.redex.conditional/?x :to ?x :from [(do ?x)]}
+ {:rule :net.joelane.redex.conditional/when-let :to (when-let ?binding ?expr) :from [(if-let ?binding ?expr nil)]}
+
+ {:rule :net.joelane.redex.conditional/if :to (if ?x ?y ?z) :from [(if-not (not ?x) ?y ?z)]}
+
+ ;; suggest `while` for bindingless loop-recur
+ {:rule :net.joelane.redex.conditional/while :to (while ?test . ?exprs) :from [(loop [] (when ?test . ?exprs (recur)))]}
+ {:rule :net.joelane.redex.conditional/let :to (let ?binding . ?exprs) :from [(let ?binding (do . ?exprs))]}
+ {:rule :net.joelane.redex.conditional/loop :to (loop ?binding . ?exprs) :from [(loop ?binding (do . ?exprs))]}]

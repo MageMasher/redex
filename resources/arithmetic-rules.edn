@@ -1,0 +1,17 @@
+[
+ {:rule :net.joelane.redex.arithmetic/inc :to (inc ?x) :from [(+ ?x 1) (+ 1 ?x)]}
+ {:rule :net.joelane.redex.arithmetic/dec :to (dec ?x) :from [(- ?x 1)]}
+ {:rule :net.joelane.redex.arithmetic/* :to (* ?x . ?xs) :from [(* ?x (* . ?xs))]}
+ {:rule :net.joelane.redex.arithmetic/+ :to (+ ?x . ?xs) :from [(+ ?x (+ . ?xs))]}
+ {:rule :net.joelane.redex.arithmetic/+0 :to (+ ?x . ?xs) :from [(+ ?x . ?xs 0) (+ 0 ?x . ?xs) ]}
+ {:rule :net.joelane.redex.arithmetic/?x :to ?x :from [(+ ?x)
+                                                       (+ ?x 0) (+ 0 ?x)
+                                                       (- ?x 0) (- 0 ?x)
+                                                       (* ?x 1) (* 1 ?x)
+                                                       (/ ?x 1) (/ 1 ?x)]}
+ {:rule :net.joelane.redex.arithmetic/zero :to 0 :from [(* ?x 0) (* 0 ?x)]}
+
+ {:rule :net.joelane.redex.arithmetic/Math.hypot :to (Math/hypot ?x ?y) :from [(Math/sqrt (+ (Math/pow ?x 2) (Math/pow ?y 2)))]}
+ {:rule :net.joelane.redex.arithmetic/Math.expm1 :to (Math/expm1 ?x) :from [(dec (Math/exp ?x))]}
+ {:rule :net.joelane.redex.arithmetic/Math.round :to (Math/round ?x) :from [(long (+ ?x 0.5))]}
+ ]
